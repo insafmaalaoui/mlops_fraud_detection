@@ -1,0 +1,38 @@
+schema: '2.0'
+stages:
+  preprocessing:
+    cmd: python src/preprocessing.py
+    deps:
+    - path: data/raw/creditcard.csv
+      hash: md5
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: src/preprocessing.py
+      hash: md5
+      md5: 1d8c8ac2be459312c119132b674405b1
+      size: 702
+    outs:
+    - path: data/processed/cleaned.csv
+      hash: md5
+      md5: a78af86d489141b9f3a3d679eba102e3
+      size: 155308323
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/cleaned.csv
+      hash: md5
+      md5: a78af86d489141b9f3a3d679eba102e3
+      size: 155308323
+    - path: src/train.py
+      hash: md5
+      md5: 3833381caf639624fce4833085d35fc9
+      size: 2191
+    outs:
+    - path: metrics/metrics.json
+      hash: md5
+      md5: b44bb4b3b37e88b7188fbc90aab04e7b
+      size: 32
+    - path: models/model.pkl
+      hash: md5
+      md5: 3f0ffb0334c9a078cc8bc5fff55aae24
+      size: 1562085
