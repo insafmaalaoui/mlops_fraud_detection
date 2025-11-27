@@ -1,25 +1,53 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 import os
 
-def main():
-    raw_path = "data/raw/creditcard.csv"
-    processed_path = "data/processed"
-    output_file = f"{processed_path}/cleaned.csv"
+RAW_DATA_PATH = "data/raw/creditcard.csv"
+PROCESSED_DATA_PATH = "data/processed"
 
-    # Create folders if not exist
-    os.makedirs(processed_path, exist_ok=True)
+def load_data():
+    """Load dataset"""
+    return pd.read_csv(RAW_DATA_PATH)
 
-    print("📌 Loading raw dataset...")
-    df = pd.read_csv(raw_path)
+def preprocess_data(df):
+    """Clean + Scale dataset"""
+    # Remove missing values
+    df = df.dropna()
 
-    # Standardize Amount column
+    # Separate features and target
+    X = df.drop("Class", axis=1)
+    y = df["Class"]
+
+    # Normalize numerical columns
     scaler = StandardScaler()
-    df["Amount"] = scaler.fit_transform(df["Amount"].values.reshape(-1, 1))
+    X_scaled = scaler.fit_transform(X)
 
-    print("📌 Saving cleaned dataset...")
-    df.to_csv(output_file, index=False)
-    print(f"✅ Done: {output_file}")
+    # Split Train/Test for later evaluation
+    X_train, X_test, y_train, y_test = train_test_split(
+        X_scaled, y, test_size=0.2, random_state=42, stratify=y
+    )
+
+    # Create a clean dataset format
+    df_clean = pd.DataFrame(X_train)
+    df_clean["Class"] = y_train.values
+
+    return df_clean
+
+
+def save_processed_data(df_clean):
+    """Save preprocessed dataset"""
+    os.makedirs(PROCESSED_DATA_PATH, exist_ok=True)
+    output_path = os.path.join(PROCESSED_DATA_PATH, "cleaned.csv")
+    df_clean.to_csv(output_path, index=False)
+    print(f"Data saved successfully → {output_path}")
+
 
 if __name__ == "__main__":
-    main()
+    print("📌 Starting preprocessing...")
+
+    df = load_data()
+    df_clean = preprocess_data(df)
+    save_processed_data(df_clean)
+
+    print("✨ Preprocessing complete!")
