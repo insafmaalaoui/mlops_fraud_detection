@@ -2,18 +2,27 @@ stages:
   preprocessing:
     cmd: python src/preprocessing.py
     deps:
-    - data/raw/creditcard.csv
-    - src/preprocessing.py
+      - data/raw/creditcard.csv
+      - src/preprocessing.py
     outs:
-    - data/processed/cleaned.csv
+      - data/processed/cleaned.csv
+
+  crossvalidation:
+    cmd: python src/crossvalidation.py
+    deps:
+      - src/crossvalidation.py
+      - data/processed/cleaned.csv
+    metrics:
+      - metrics/cv_metrics.json:
+          cache: false
 
   train:
     cmd: python src/train.py
     deps:
-    - src/train.py
-    - data/processed/cleaned.csv
+      - src/train.py
+      - data/processed/cleaned.csv   # ← IMPORTANT : tu entraînes à partir des données
     outs:
-    - models/model.pkl
+      - models/model.pkl
     metrics:
-    - metrics/metrics.json:   
+    - metrics/metrics.json:    # ← mettre le chemin correct
         cache: false
