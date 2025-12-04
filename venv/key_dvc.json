@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "frauddetectionmlops-479401",
+  "private_key_id": "d1ec497929f43eac8b6cd38836bdc8a4640bd732",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQC/3awwUPv7gz/e\nZBxkVjgGx5Hl08Jk2fRaFSg37FCAoIIE/S9JkuJ5tqqpq4+uDc5vgLCEnkypgs5W\n4kcDdnxBtFJ0H8MP56+ob2sHFhgFGD0yGttX9oTsti9TpqNBuS5DzhVEd0wv1AK4\nO8vVE6pbl8Ol5scB0yzW9Gyo/4kRyDMe3CBH8c07We5xllta3vDZQ3ehnsH6J7eT\nwTKD35xAA4NDApaSfJDy2lAQ0p+T8dOLeQ8sY49rOZRpdRnaH1oKLpFfvOvaxjH6\ngvKCdEENxmCmA2hYNQW4Y1X95cDSYbredS4P8CFHLQqPJ0ydWQNaBv9lTKKPCHDr\nNbIz3Re/AgMBAAECggEANy5JZfH8rrbuSQcw1Tioz2ZZUyimiXvX14qrMP5BnuTK\n0CWDEp1wjkHXbondflkRLKdt3Q5sDPqGXp2gf+H1Va5HYod6AdqH/iDhPr3/dYOl\nogHwYKmRTEUPcncEEBRytmSQYEsROdY3XAYyltsbjVEmH1IynRc/l6jfkXFA2kBi\nsnXCr+jk06Ll/L0IaooEjSm2A+ScUdpBLwznZ7IGxJVhP6+moueCp6d12z751XlV\nMvByIK8zPnC0v8bZ29mPkmZ/DA9I/gA2pHpWCIiOiZSeP/ZE4NTzSKR4Ui4TSw/p\ntwfHDISaHCXjXYY7ZhbJ/ezugQvI3VzTmboKXK1WJQKBgQDpIt6wkX88Ljf2IlWl\n6+Q2bC31llmK8M5GUZ1HXmHIvZ6cwkkV+X3DhV2QgohOyCHkzFRxR9dGCVNulkgI\n5JfRd97y14CryTKKHT9icKlRRGOps3fK0G7lnxOh0x7eJbk1A1RdW3a/KIGV8sWk\n3mNtv3/n/VJjSLAC/3kLnOfzxQKBgQDSrqsX9scJWnHwYfRzWXIxsZ82mfs5aDY0\nFndcLKL1uIsizlHhic1IIAVZUkmRSLk1JSmBYCjy8dymwIpKh8gD15XB4Oabvj+f\nPnM4x6W/jGMFxPbHhIe4rXeKTHD1mxnMtQfkKDs5Pc50wu6+9cDWcOubGO0s/BHb\nny4exhBhswKBgQDHK8AeDp8plb6/a4PKVWXJTNBS0Fi9R46iKpV4ZFybt8tq1tzD\nhjr4L9bIX4v96iJyqlG12Y9DSTJa9s6hslE1Zfg1dQB7Qk8ICYaeHeu4/vk6AJXl\n0f3789Q82vWzCX1ZmfeYLkybcQqMRTSu7kL5frHSSuv44B9m4ETUM/9BlQKBgQCf\n1qa1mqMsxHK3Fgn4zX6mlwSczzvbNOYSpIzP4ImN9QGSWYejngGhW7HTL2vjDpJ8\n8IHJxuOqVba6yE7i9prX12Kl4fPzauYn8aBHDqkAZwjlYqZ7fl/dy7Vqtk3o+FAd\nj6a6AY/VAMA2s4GgXSB9UNRfKg0e2OrPfbfm3wukowKBgQC/37km2XeQZX+3xvB+\nasLI8SpfkKpSnrBJG1pfG0+GRhLmlEWsj7VoU4y+f9NCHpYyahLnIaE9cE6yEJt7\nPCmtRecOUmwQ3OPtN5mRIOjQJejqvsNW+Z21yE1moM1ukDkHUSp77GxOyAqEx6Mt\nAGTSWAGNl1t0/At0JXvoxy/vJQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "dvc-service-account@frauddetectionmlops-479401.iam.gserviceaccount.com",
+  "client_id": "113131434500363559739",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/dvc-service-account%40frauddetectionmlops-479401.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
