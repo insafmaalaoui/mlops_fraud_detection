@@ -1,3 +1,33 @@
+# ENV
+venv/
+.venv/
+env/
+*.pyc
+__pycache__/
+
+# DATASETS
+data/
+datasets/
+*.csv
+*.parquet
+
+# MODELS (sauf si tu veux les copier)
+
+
+# GIT
+.git/
+.gitignore
+
+# EDITOR
+.vscode/
+.idea/
+
+# LOCAL OS
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
 venv/
 __pycache__/
 *.pyc
@@ -5,3 +35,4 @@ data/        # si tu préfères monter data via volume
 mlruns/
 models/
 .env
+
