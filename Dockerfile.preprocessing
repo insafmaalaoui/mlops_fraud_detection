@@ -1,0 +1,26 @@
+# Dockerfile.preprocessing
+FROM python:3.11-slim
+
+# Prevent Python from writing .pyc files and buffer stdout/stderr
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+# copier uniquement les fichiers nécessaires (requirements + code)
+COPY requirements.txt /app/requirements.txt
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential gcc \
+  && pip install --no-cache-dir -r /app/requirements.txt \
+  && apt-get purge -y --auto-remove build-essential gcc \
+  && rm -rf /var/lib/apt/lists/*
+
+# copier le code source
+COPY src/ /app/src/
+
+# créer dossiers attendus (sécurise l'écriture)
+RUN mkdir -p /app/data/raw /app/data/processed
+
+# commande par défaut : exécute le preprocessing
+# (on peut l'écraser au docker run si besoin)
+CMD ["python", "src/preprocessing.py"]
