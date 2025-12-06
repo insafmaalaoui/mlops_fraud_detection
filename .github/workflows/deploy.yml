@@ -1,0 +1,11 @@
+name: Local Deploy Trigger
+
+on:
+  workflow_dispatch:
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment information
+        run: echo "Nouvelle version prête sur Docker Hub. Exécute : docker compose pull && docker compose up -d"
