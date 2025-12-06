@@ -11,9 +11,9 @@ def load_model():
             os.path.dirname(__file__),
             "..",
             "mlruns",
-            "443060123017548317",
+            "151326182472059237",
             "models",
-            "m-4ae4f1e1d8314af2b603a426d684ea9e",
+            "m-53db05ef3bfc4570ba3db7aaaef83d23",
             "artifacts",
         )
     )

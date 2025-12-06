@@ -30,6 +30,8 @@ from cryptography.x509.base import (
 )
 from cryptography.x509.extensions import (
     AccessDescription,
+    Admission,
+    Admissions,
     AuthorityInformationAccess,
     AuthorityKeyIdentifier,
     BasicConstraints,
@@ -55,6 +57,7 @@ from cryptography.x509.extensions import (
     KeyUsage,
     MSCertificateTemplate,
     NameConstraints,
+    NamingAuthority,
     NoticeReference,
     OCSPAcceptableResponses,
     OCSPNoCheck,
@@ -63,6 +66,8 @@ from cryptography.x509.extensions import (
     PolicyInformation,
     PrecertificateSignedCertificateTimestamps,
     PrecertPoison,
+    PrivateKeyUsagePeriod,
+    ProfessionInfo,
     ReasonFlags,
     SignedCertificateTimestamps,
     SubjectAlternativeName,
@@ -111,6 +116,7 @@ OID_FRESHEST_CRL = ExtensionOID.FRESHEST_CRL
 OID_INHIBIT_ANY_POLICY = ExtensionOID.INHIBIT_ANY_POLICY
 OID_ISSUER_ALTERNATIVE_NAME = ExtensionOID.ISSUER_ALTERNATIVE_NAME
 OID_KEY_USAGE = ExtensionOID.KEY_USAGE
+OID_PRIVATE_KEY_USAGE_PERIOD = ExtensionOID.PRIVATE_KEY_USAGE_PERIOD
 OID_NAME_CONSTRAINTS = ExtensionOID.NAME_CONSTRAINTS
 OID_OCSP_NO_CHECK = ExtensionOID.OCSP_NO_CHECK
 OID_POLICY_CONSTRAINTS = ExtensionOID.POLICY_CONSTRAINTS
@@ -174,6 +180,8 @@ __all__ = [
     "OID_CA_ISSUERS",
     "OID_OCSP",
     "AccessDescription",
+    "Admission",
+    "Admissions",
     "Attribute",
     "AttributeNotFound",
     "Attributes",
@@ -216,6 +224,7 @@ __all__ = [
     "NameAttribute",
     "NameConstraints",
     "NameOID",
+    "NamingAuthority",
     "NoticeReference",
     "OCSPAcceptableResponses",
     "OCSPNoCheck",
@@ -226,6 +235,8 @@ __all__ = [
     "PolicyInformation",
     "PrecertPoison",
     "PrecertificateSignedCertificateTimestamps",
+    "PrivateKeyUsagePeriod",
+    "ProfessionInfo",
     "PublicKeyAlgorithmOID",
     "RFC822Name",
     "ReasonFlags",

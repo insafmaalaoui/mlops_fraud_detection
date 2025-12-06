@@ -1,4 +1,4 @@
-#!C:\Users\insaf\fraud_detection_mlop\venv\Scripts\python.exe
+#!C:\Users\bochr\OneDrive\Bureau\Cours\Data_Science\Semestre_3\MLOps\mlops_fraud_detection\venv\Scripts\python.exe
 
 import logging
 import os

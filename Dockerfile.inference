@@ -1,14 +1,20 @@
-FROM python:3.10-slim
+# Dockerfile.inference
+FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install only inference dependencies
 COPY requirements.inference.txt .
 
 RUN pip install --no-cache-dir -r requirements.inference.txt
 
-COPY . .
+# Copy only what is needed for inference
+COPY src/ ./src/
+COPY api/ ./api/
+COPY models/ ./models/
 
-# très important :
-COPY mlruns ./mlruns
+# Expose port for FastAPI
+EXPOSE 8000
 
+# Start API server
 CMD ["uvicorn", "api.apimain:app", "--host", "0.0.0.0", "--port", "8000"]
