@@ -1,24 +1,18 @@
-import mlflow
 import os
-
+import pickle
 
 def load_model():
-    print("📌 Loading MLflow local model...")
+    print("📌 Loading local pickle model...")
 
-    # Path pointing to the local mlruns model artifact directory
-    model_path = os.path.abspath(
-        os.path.join(
-            os.path.dirname(__file__),
-            "..",
-            "mlruns",
-            "443060123017548317",
-            "models",
-            "m-4ae4f1e1d8314af2b603a426d684ea9e",
-            "artifacts",
-        )
-    )
+    # Chemin vers model.pkl
+    model_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "models", "model.pkl")
 
-    model = mlflow.sklearn.load_model(model_path)
+    if not os.path.exists(model_path):
+        raise FileNotFoundError(f"❌ model.pkl not found at: {model_path}")
 
-    print("✅ Model loaded successfully!")
+    # Charger le modèle pickle
+    with open(model_path, "rb") as f:
+        model = pickle.load(f)
+
+    print("✅ model.pkl loaded successfully!")
     return model
