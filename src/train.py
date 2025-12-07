@@ -14,7 +14,7 @@ def main():
     mlflow.set_tracking_uri("file:./mlruns")
 
     # Ensure mlruns directory exists
-    os.makedirs("mlruns", exist_ok=True)
+    os.makedirs("mlruns/.trash", exist_ok=True)
 
     # Now we can set the experiment
     mlflow.set_experiment("fraud_detection")

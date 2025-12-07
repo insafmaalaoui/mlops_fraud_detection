@@ -1,0 +1,9 @@
+[theme]
+base="dark"
+primaryColor="#FF69B4"           # Rose flashy
+backgroundColor="#0E1117"        # Noir/gris foncé
+secondaryBackgroundColor="#1E1E2F" 
+textColor="#FFFFFF"
+font="sans serif"
+
+
