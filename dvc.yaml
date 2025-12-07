@@ -24,5 +24,5 @@ stages:
     outs:
       - models/model.pkl
     metrics:
-      - metrics/metrics.json:
-          cache: false
+    - metrics/metrics.json:    # ← mettre le chemin correct
+        cache: false

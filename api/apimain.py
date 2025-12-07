@@ -1,10 +1,10 @@
-# api/main.py
 from fastapi import FastAPI
 from api.schemas import Transaction
 from api.model_loader import load_model
 import pandas as pd
 from api.logger import log_json
 
+<<<<<<< HEAD
 # Evidently imports: make optional because different versions expose different
 # symbols and the package may be absent in some environments. If unavailable
 # we'll disable the drift endpoint gracefully.
@@ -28,6 +28,10 @@ except Exception:
     Instrumentator = None
     _PROM_AVAILABLE = False
 
+=======
+# NEW: monitoring
+from prometheus_fastapi_instrumentator import Instrumentator
+>>>>>>> e2a5f57c651b3458a5a61c02c8079ca2ce687b04
 
 app = FastAPI(
     title="Fraud Detection API",
@@ -35,7 +39,14 @@ app = FastAPI(
     version="2.0.0"
 )
 
+<<<<<<< HEAD
 # Charger modèle au démarrage
+=======
+# Monitoring Prometheus
+Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+# Load model once
+>>>>>>> e2a5f57c651b3458a5a61c02c8079ca2ce687b04
 model = load_model()
 
 # Buffer pour drift (on stocke les dernières prédictions)
@@ -57,12 +68,16 @@ def health():
 @app.post("/predict", tags=["Prediction"])
 def predict(data: Transaction):
 
+<<<<<<< HEAD
     # Convert JSON -> DataFrame
+=======
+>>>>>>> e2a5f57c651b3458a5a61c02c8079ca2ce687b04
     try:
         df = data.to_model_dataframe(model)
     except Exception:
         df = pd.DataFrame([data.dict()])
 
+<<<<<<< HEAD
     # If model is not loaded, return 503
     if model is None:
         return {"error": "Model not loaded"}, 503
@@ -80,6 +95,11 @@ def predict(data: Transaction):
         prediction_history.pop(0)
 
     # Logs JSON
+=======
+    prediction = model.predict(df)[0]
+
+    # Logging
+>>>>>>> e2a5f57c651b3458a5a61c02c8079ca2ce687b04
     log_json({
         "event": "prediction",
         "input": data.dict(),

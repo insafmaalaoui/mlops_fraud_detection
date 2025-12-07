@@ -27,3 +27,10 @@ datasets/
 *.tmp
 .DS_Store
 Thumbs.db
+
+venv/
+__pycache__/
+*.pyc
+data/        # si tu préfères monter data via volume
+.env
+
