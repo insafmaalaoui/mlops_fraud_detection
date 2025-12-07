@@ -3,7 +3,6 @@ import pickle
 
 
 def load_model():
-<<<<<<< HEAD
     """Attempt to load the ML model.
 
     Priority:
@@ -51,7 +50,6 @@ def load_model():
 
     print("⚠️ No model found (mlflow missing or model artifact absent). Continuing without model.")
     return None
-=======
     print("📌 Loading local pickle model...")
 
     # Chemin vers model.pkl dans dossier /models
@@ -70,4 +68,3 @@ def load_model():
 
     print("✅ model.pkl loaded successfully!")
     return model
->>>>>>> e2a5f57c651b3458a5a61c02c8079ca2ce687b04
