@@ -1,0 +1,17 @@
+version: '3.9'
+
+services:
+  fraud-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.inference
+    container_name: fraud_api_container
+    ports:
+      - "8000:8000"
+    restart: always
+    networks:
+      - mlops
+
+networks:
+  mlops:
+    external: true

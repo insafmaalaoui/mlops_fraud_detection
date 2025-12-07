@@ -1,25 +1,24 @@
 # Dockerfile.train
 FROM python:3.11-slim
 
-# Variables d'environnement
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
 
-# Copier requirements si existant
-COPY requirements.txt /app/requirements.txt
-RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
+# Install dependencies
+COPY requirements.txt .
+
+RUN apt-get update && \
     apt-get install -y --no-install-recommends build-essential && \
-    pip install --no-cache-dir -r /app/requirements.txt && \
+    pip install --no-cache-dir -r requirements.txt && \
     apt-get purge -y --auto-remove build-essential && \
     rm -rf /var/lib/apt/lists/*
 
+# Copy source code and training pipeline
+COPY src/ ./src/
 
-# Copier le code source
-COPY . /app
-
-# Créer dossiers attendus
+# Ensure directories
 RUN mkdir -p /app/data/raw /app/data/processed /app/models /app/metrics /app/mlruns
 
-# Commande par défaut: lancer le pipeline complet
+# Default command → run full training pipeline
 CMD ["python", "src/pipeline_train.py"]

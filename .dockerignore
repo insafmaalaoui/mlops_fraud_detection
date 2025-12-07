@@ -32,7 +32,5 @@ venv/
 __pycache__/
 *.pyc
 data/        # si tu préfères monter data via volume
-mlruns/
-models/
 .env
 

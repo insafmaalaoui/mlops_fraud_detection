@@ -1,9 +1,11 @@
-# api/main.py
 from fastapi import FastAPI
 from api.schemas import Transaction
 from api.model_loader import load_model
 import pandas as pd
 from api.logger import log_json
+
+# NEW: monitoring
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI(
     title="Fraud Detection API",
@@ -11,7 +13,10 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Load MLflow model once at start
+# Monitoring Prometheus
+Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+# Load model once
 model = load_model()
 
 @app.get("/", tags=["Health Check"])
@@ -20,21 +25,21 @@ def home():
 
 @app.post("/predict", tags=["Prediction"])
 def predict(data: Transaction):
-    # Convertir JSON → DataFrame en respectant l'ordre des features attendu par le modèle
+
     try:
         df = data.to_model_dataframe(model)
     except Exception:
-        # fallback to basic dict-based DataFrame
         df = pd.DataFrame([data.dict()])
 
-    # Faire la prédiction
     prediction = model.predict(df)[0]
-    #  AJOUTE LE LOG 
+
+    # Logging
     log_json({
         "event": "prediction",
         "input": data.dict(),
         "prediction": int(prediction)
     })
+
     return {
         "fraud": int(prediction),
         "message": "Fraud detected" if prediction == 1 else "Transaction OK"
