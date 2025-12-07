@@ -4,10 +4,9 @@ from api.model_loader import load_model
 import pandas as pd
 from api.logger import log_json
 
-
-# ------------------------------------------------------------------------------
-# 🔹 Evidently (optionnel)
-# ------------------------------------------------------------------------------
+# Evidently imports: make optional because different versions expose different
+# symbols and the package may be absent in some environments. If unavailable
+# we'll disable the drift endpoint gracefully.
 try:
     from evidently.report import Report
     from evidently.metric_preset import DataDriftPreset
@@ -18,9 +17,9 @@ except Exception:
     _EVIDENTLY_AVAILABLE = False
 
 
-# ------------------------------------------------------------------------------
-# 🔹 Prometheus (optionnel)
-# ------------------------------------------------------------------------------
+
+
+# ➕ Prometheus instrumentator (optional)
 try:
     from prometheus_fastapi_instrumentator import Instrumentator
     _PROM_AVAILABLE = True
@@ -28,38 +27,37 @@ except Exception:
     Instrumentator = None
     _PROM_AVAILABLE = False
 
+# NEW: monitoring
+from prometheus_fastapi_instrumentator import Instrumentator
 
-# ------------------------------------------------------------------------------
-# 🌟 Init FastAPI
-# ------------------------------------------------------------------------------
 app = FastAPI(
     title="Fraud Detection API",
     description="API de détection de fraude avec monitoring",
     version="2.0.0"
 )
 
+# Monitoring Prometheus
+Instrumentator().instrument(app).expose(app, endpoint="/metrics")
 
-# ------------------------------------------------------------------------------
-# 🌟 Load modèle une seule fois
-# ------------------------------------------------------------------------------
+# Load model once
 model = load_model()
 
-# Buffer pour stocker les prédictions (pour Evidently)
+# Buffer pour drift (on stocke les dernières prédictions)
 prediction_history = []
 
 
-# ------------------------------------------------------------------------------
-# 🌟 1. Health Check
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# 🌟 1. Endpoint Santé API
+# ----------------------------------------------------------------------
 @app.get("/", tags=["Health Check"])
 @app.get("/monitoring/health", tags=["Monitoring"])
 def health():
     return {"status": "API operational", "model_loaded": model is not None}
 
 
-# ------------------------------------------------------------------------------
-# 🌟 2. Prediction + Logs + Drift Buffer
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# 🌟 2. Endpoint Prediction + LOGS + DRIFT BUFFER
+# ----------------------------------------------------------------------
 @app.post("/predict", tags=["Prediction"])
 def predict(data: Transaction):
 
@@ -68,21 +66,9 @@ def predict(data: Transaction):
     except Exception:
         df = pd.DataFrame([data.dict()])
 
-    if model is None:
-        return {"error": "Model not loaded"}, 503
-
     prediction = model.predict(df)[0]
 
-    # Sauvegarde dans le buffer drift
-    df_copy = df.copy()
-    df_copy["prediction"] = int(prediction)
-    prediction_history.append(df_copy)
-
-    # Buffer max = 200 lignes
-    if len(prediction_history) > 200:
-        prediction_history.pop(0)
-
-    # Log JSON
+    # Logging
     log_json({
         "event": "prediction",
         "input": data.dict(),
@@ -95,15 +81,15 @@ def predict(data: Transaction):
     }
 
 
-# ------------------------------------------------------------------------------
-# 🌟 3. Evidently Drift Report
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# 🌟 3. Endpoint Evidently Drift Report
+# ----------------------------------------------------------------------
 @app.get("/monitoring/drift", tags=["Monitoring"])
 def drift_report():
 
     if not _EVIDENTLY_AVAILABLE:
         return {
-            "error": "Evidently is not available. Install 'evidently' to enable drift reports."
+            "error": "Evidently is not available in this environment. Install 'evidently' to enable drift reports."
         }
 
     if len(prediction_history) < 30:
@@ -111,6 +97,7 @@ def drift_report():
 
     df = pd.concat(prediction_history, ignore_index=True)
 
+    # Build and run report (use small sample windows)
     try:
         report = Report(metrics=[DataDriftPreset()])
         report.run(reference_data=df.head(50), current_data=df.tail(50))
@@ -119,11 +106,14 @@ def drift_report():
         return {"error": "failed to build drift report", "detail": str(e)}
 
 
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
 # 🌟 4. Prometheus Metrics
-# ------------------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# Prometheus instrumentation must be added before the app starts serving.
+# Do it at import time (module-level) so middleware is registered early.
 if _PROM_AVAILABLE:
     try:
         Instrumentator().instrument(app).expose(app)
     except Exception:
+        # If instrumentation fails for any reason, skip it to avoid breaking startup
         pass
