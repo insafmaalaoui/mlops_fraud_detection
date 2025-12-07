@@ -7,6 +7,10 @@ from api.logger import log_json
 # Evidently imports: make optional because different versions expose different
 # symbols and the package may be absent in some environments. If unavailable
 # we'll disable the drift endpoint gracefully.
+
+# ------------------------------------------------------------------------------
+# 🔹 Evidently (optionnel)
+# ------------------------------------------------------------------------------
 try:
     from evidently.report import Report
     from evidently.metric_preset import DataDriftPreset
@@ -30,14 +34,23 @@ except Exception:
 # NEW: monitoring
 from prometheus_fastapi_instrumentator import Instrumentator
 
+# NEW: monitoring
+from prometheus_fastapi_instrumentator import Instrumentator
+
+# ------------------------------------------------------------------------------
+# 🌟 Init FastAPI
+# ------------------------------------------------------------------------------
 app = FastAPI(
     title="Fraud Detection API",
     description="API de détection de fraude avec monitoring",
     version="2.0.0"
 )
 
+# Charger modèle au démarrage
 # Monitoring Prometheus
 Instrumentator().instrument(app).expose(app, endpoint="/metrics")
+
+# Load model once
 
 # Load model once
 model = load_model()
@@ -61,14 +74,30 @@ def health():
 @app.post("/predict", tags=["Prediction"])
 def predict(data: Transaction):
 
+    # Convert JSON -> DataFrame
     try:
         df = data.to_model_dataframe(model)
     except Exception:
         df = pd.DataFrame([data.dict()])
 
+    # If model is not loaded, return 503
+    if model is None:
+        return {"error": "Model not loaded"}, 503
+
     prediction = model.predict(df)[0]
 
-    # Logging
+    # Sauvegarde dans le buffer drift
+    df_copy = df.copy()
+    df_copy["prediction"] = int(prediction)
+    prediction_history.append(df_copy)
+
+    # Buffer max = 200 lignes
+    if len(prediction_history) > 200:
+        prediction_history.pop(0)
+
+    # Logs JSON
+    prediction = model.predict(df)[0]
+
     log_json({
         "event": "prediction",
         "input": data.dict(),
