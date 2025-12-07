@@ -10,10 +10,18 @@ from mlflow.models import infer_signature
 import os
 
 def main():
+    # Always set tracking URI first (important for CI)
+    mlflow.set_tracking_uri("file:./mlruns")
+
+    # Ensure mlruns directory exists
+    os.makedirs("mlruns", exist_ok=True)
+
+    # Now we can set the experiment
+    mlflow.set_experiment("fraud_detection")
+
     print("📌 Loading processed dataset...")
     df = pd.read_csv("data/processed/cleaned.csv")
 
-    # Split dataset
     X = df.drop("Class", axis=1)
     y = df["Class"]
 
@@ -22,10 +30,6 @@ def main():
     )
 
     print("📌 Training Random Forest...")
-
-    # Start MLflow experiment
-    mlflow.set_tracking_uri("file:./mlruns")
-    mlflow.set_experiment("fraud_detection")
 
     with mlflow.start_run():
         model = RandomForestClassifier(
@@ -40,15 +44,13 @@ def main():
         acc = accuracy_score(y_test, y_pred)
         print(f"✅ Accuracy: {acc}")
 
-        # Log parameters & metrics
+        # MLflow logs
         mlflow.log_param("n_estimators", 150)
         mlflow.log_param("max_depth", 10)
         mlflow.log_metric("accuracy", acc)
 
-        # Define signature
         signature = infer_signature(X_train, y_pred)
 
-        # Log MLflow model
         mlflow.sklearn.log_model(
             sk_model=model,
             artifact_path="rf_model",
@@ -58,18 +60,17 @@ def main():
 
         print("📌 MLflow: Model logged!")
 
-        # Save model to /models for DVC
+        # Ensure result dirs exist
         os.makedirs("models", exist_ok=True)
+        os.makedirs("metrics", exist_ok=True)
+
+        # Save model for the inference API
         with open("models/model.pkl", "wb") as f:
             pickle.dump(model, f)
-        print("✅ Model saved to models/model.pkl")
 
-        # Save metrics to metrics.json for DVC
-        os.makedirs("metrics", exist_ok=True)
-        metrics_path = "metrics/metrics.json"
-        with open(metrics_path, "w") as f:
+        # Save metrics for DVC
+        with open("metrics/metrics.json", "w") as f:
             json.dump({"accuracy": acc}, f)
-        print(f"✅ Metrics saved to {metrics_path}")
 
 if __name__ == "__main__":
     main()
