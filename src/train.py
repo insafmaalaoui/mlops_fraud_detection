@@ -10,13 +10,10 @@ from mlflow.models import infer_signature
 import os
 
 def main():
-    # Always set tracking URI first (important for CI)
     mlflow.set_tracking_uri("file:./mlruns")
 
-    # Ensure mlruns directory exists
     os.makedirs("mlruns/.trash", exist_ok=True)
 
-    # Now we can set the experiment
     mlflow.set_experiment("fraud_detection")
 
     print("📌 Loading processed dataset...")
@@ -44,7 +41,6 @@ def main():
         acc = accuracy_score(y_test, y_pred)
         print(f"✅ Accuracy: {acc}")
 
-        # MLflow logs
         mlflow.log_param("n_estimators", 150)
         mlflow.log_param("max_depth", 10)
         mlflow.log_metric("accuracy", acc)
@@ -60,15 +56,12 @@ def main():
 
         print("📌 MLflow: Model logged!")
 
-        # Ensure result dirs exist
         os.makedirs("models", exist_ok=True)
         os.makedirs("metrics", exist_ok=True)
 
-        # Save model for the inference API
         with open("models/model.pkl", "wb") as f:
             pickle.dump(model, f)
 
-        # Save metrics for DVC
         with open("metrics/metrics.json", "w") as f:
             json.dump({"accuracy": acc}, f)
 
