@@ -1,0 +1,45 @@
+name: Drift Detection
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * *'   # tous les jours à 06:00 UTC (ajuste si besoin)
+
+jobs:
+  detect-drift:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Prepare data
+        # ici tu peux ajouter un step pour récupérer un batch de données récentes (ex: from S3, API...)
+        run: |
+          mkdir -p data/recent
+          # Example: copy a file checked in for tests
+          cp data/processed/cleaned.csv data/recent/recent_sample.csv || true
+
+      - name: Run drift detection
+        run: |
+          python scripts/drift_detection.py \
+            --baseline data/processed/cleaned.csv \
+            --current data/recent/recent_sample.csv \
+            --output reports/drift_report \
+            --mlflow-uri file:./mlruns \
+            --run-name "drift-from-github-actions"
+
+      - name: Upload drift report as workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: drift_report
+          path: reports/drift_report/
